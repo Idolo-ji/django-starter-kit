@@ -102,7 +102,7 @@ try:
         
 except ImportError:
     print('DATABASE: DEFAULT')
-
+print("USING DATABASE", DATABASES.get('default).get('ENGINE'))
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -146,3 +146,31 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_LOCATION = 'static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+MEDIAFILES_LOCATION = 'media'
+
+# S3 setup for media and static
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_FILE_OVERWRITE = False
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+if (AWS_STORAGE_BUCKET_NAME and AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY and AWS_S3_CUSTOM_DOMAIN):
+    MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+    STATICFILES_STORAGE = 'custom_storages.StaticStorage'
+    DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
+    print('using django-storages s3 storage')
+else:
+    print('using default django storage')
+
+ROBOTS_CACHE_TIMEOUT = 60*60*24
+ROBOTS_USE_SITEMAP = True
+AWS_S3_OBJECT_PARAMETERS = {
+    "ACL": "public-read"
+}
