@@ -102,7 +102,7 @@ try:
         
 except ImportError:
     print('DATABASE: DEFAULT')
-print("USING DATABASE", DATABASES.get('default).get('ENGINE'))
+print("USING DATABASE", DATABASES.get('default').get('ENGINE'))
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -174,3 +174,5 @@ ROBOTS_USE_SITEMAP = True
 AWS_S3_OBJECT_PARAMETERS = {
     "ACL": "public-read"
 }
+
+SITE_ID=1
